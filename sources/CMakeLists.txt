@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 
-project (RES-Network)
+project (MCP-1-103)
 
 set (TARGET_NAME )
 

@@ -1,2 +1,2 @@
 @echo on
-start ..\..\generated\Keil\RES-Network.sln
+start ..\..\generated\Keil\MCP-1-103.sln
