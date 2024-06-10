@@ -891,6 +891,21 @@
             </File>
           </Files>
         </Group>
+        <Group>
+          <GroupName>Storage</GroupName>
+          <Files>
+            <File>
+              <FileName>Measures.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\src\Storage\Measures.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>Measures.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\src\Storage\Measures.h</FilePath>
+            </File>
+          </Files>
+        </Group>
       </Groups>
     </Target>
     <Target>
@@ -1775,6 +1790,21 @@
               <FileName>Settings.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\src\Settings\Settings.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Storage</GroupName>
+          <Files>
+            <File>
+              <FileName>Measures.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\src\Storage\Measures.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>Measures.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\src\Storage\Measures.h</FilePath>
             </File>
           </Files>
         </Group>
