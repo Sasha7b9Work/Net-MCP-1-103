@@ -29,17 +29,17 @@ namespace Display
 
     void DrawZones();
 
-    struct Measure
+    struct DMeasure
     {
         String<> old;
         String<> current;
 
-        TypeMeasure::E type;
+        Measure::E type;
         float value;                // Последнее установленное значение
         int position;               // Текущая отрисовываемая позиция
         uint time;                  // Время последнего изменения текущей отрисовываемой позиции
 
-        Measure(TypeMeasure::E t) : type(t), value(0.0f), position(0), time(0) {}
+        DMeasure(Measure::E t) : type(t), value(0.0f), position(0), time(0) {}
 
         void Draw(const int x, const int y, int size = 1);
 
@@ -48,15 +48,18 @@ namespace Display
         String<> Units();
     };
 
-    static Measure measures[TypeMeasure::Count] =
+    static DMeasure measures[Measure::Count] =
     {
-        Measure(TypeMeasure::Pressure),
-        Measure(TypeMeasure::Illumination),
-        Measure(TypeMeasure::Temperature),
-        Measure(TypeMeasure::Humidity)
-#ifdef TYPE_1
-        ,Measure(TypeMeasure::Velocity)
-#endif
+        DMeasure(Measure::Temperature),
+        DMeasure(Measure::Pressure),
+        DMeasure(Measure::Humidity),
+        DMeasure(Measure::DewPoint),
+        DMeasure(Measure::Velocity),
+        DMeasure(Measure::Latitude),
+        DMeasure(Measure::Longitude),
+        DMeasure(Measure::Altitude),
+        DMeasure(Measure::Azimuth),
+        DMeasure(Measure::Illumination)
     };
 
     static void DrawMeasures();
@@ -171,11 +174,11 @@ void Rectangle::Draw(int x, int y, Color::E color)
 }
 
 
-void Display::SetMeasure(TypeMeasure::E type, float value)
+void Display::SetMeasure(const Measure &_measure, uint /*timeMS*/)
 {
-    Measure &measure = measures[type];
+    DMeasure &measure = measures[_measure.GetName()];
 
-    if (value == measure.value) //-V550
+    if (_measure.GetDouble() == measure.value) //-V550
     {
         return;
     };
@@ -184,14 +187,14 @@ void Display::SetMeasure(TypeMeasure::E type, float value)
 
     measure.position = 0;
     measure.time = TIME_MS;
-    measure.value = value;
+    measure.value = (float)_measure.GetDouble();
 
-    measure.current.SetFormat("%f", value);
+    measure.current.SetFormat("%f", measure.value);
     measure.current[6] = '\0';
 }
 
 
-void Display::Measure::Draw(const int x0, const int y0, int size)
+void Display::DMeasure::Draw(const int x0, const int y0, int size)
 {
     int width_zone = 38;
     int height_zone = 12;
@@ -315,12 +318,12 @@ void Display::DrawMeasures()
     const int x0 = 3;
 
     // Пустое место между строками
-    const int d_lines = (Display::HEIGHT - TypeMeasure::Count * Font::Height()) / (TypeMeasure::Count + 1);
+    const int d_lines = (Display::HEIGHT - Measure::Count * Font::Height()) / (Measure::Count + 1);
 
     const int y0 = d_lines;
     const int dY = d_lines + Font::Height();
 
-    for (int i = 0; i < TypeMeasure::Count; i++)
+    for (int i = 0; i < Measure::Count; i++)
     {
         if (gset.display.show_measure[i])
         {
@@ -344,7 +347,7 @@ void Display::DrawBigMeasure()
 
     BeginScene(Color::BLACK);
 
-    static const int x[TypeMeasure::Count] =
+    static const int x[Measure::Count] =
     {
         30,
         10,
@@ -355,7 +358,7 @@ void Display::DrawBigMeasure()
 #endif
     };
 
-    Measure &measure = measures[gset.display.typeDisplaydInfo.value];
+    DMeasure &measure = measures[gset.display.typeDisplaydInfo.value];
 
     Font::Text::DrawBig(x[measure.type], 15, 2, measure.Name().c_str(), Color::_1);
 
@@ -367,9 +370,9 @@ void Display::DrawBigMeasure()
 }
 
 
-String<> Display::Measure::Name()
+String<> Display::DMeasure::Name()
 {
-    static const pchar names[TypeMeasure::Count] =
+    static const pchar names[Measure::Count] =
     {
         "ДАВЛЕНИЕ",
         "ОСВЕЩЕННОСТЬ",
@@ -383,9 +386,9 @@ String<> Display::Measure::Name()
     return String<>(names[type]);
 }
 
-String<> Display::Measure::Units()
+String<> Display::DMeasure::Units()
 {
-    static const pchar units[TypeMeasure::Count] =
+    static const pchar units[Measure::Count] =
     {
         "гПа",
         "лк",

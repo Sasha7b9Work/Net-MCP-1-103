@@ -2,6 +2,7 @@
 #include "defines.h"
 #include "Hardware/HAL/HAL.h"
 #include "Hardware/CDC/CDC.h"
+#include "Utils/Math.h"
 #include <stm32f1xx_hal.h>
 
 
@@ -69,4 +70,18 @@ void Error_Handler()
     while(1)
     {
     }
+}
+
+
+uint HAL::GetUID()
+{
+#ifdef WIN32
+    return 123;
+#else
+    uint8 bytes[12];
+
+    std::memcpy(bytes, (void *)0x1FFFF7E8, 12); //-V566
+
+    return Math::CalculateCRC(bytes, 12);
+#endif
 }

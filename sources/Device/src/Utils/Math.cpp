@@ -15,7 +15,7 @@ namespace Math
 }
 
 
-uint Math::CalculateHash(const void *buffer, int size)
+uint Math::CalculateCRC(const void *buffer, int size)
 {
     uint hash = 0;
 

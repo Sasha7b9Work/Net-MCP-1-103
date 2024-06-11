@@ -46,9 +46,9 @@ void BME280::Init()
 }
 
 
-bool BME280::GetMeasures(float* temp, float* pressure, float* humidity)
+bool BME280::GetMeasures(Measure *temp, Measure *pressure, Measure *humidity)
 {
-    if(HAL_GetTick() < timeNext)
+    if (HAL_GetTick() < timeNext)
     {
         return false;
     }
@@ -83,9 +83,9 @@ bool BME280::GetMeasures(float* temp, float* pressure, float* humidity)
 
     if (result == BME280_OK)
     {
-        *temp = (float)comp_data.temperature;
-        *pressure = (float)comp_data.pressure / 100.0f;
-        *humidity = (float)comp_data.humidity;
+        temp->Set(Measure::Temperature, comp_data.temperature);
+        pressure->Set(Measure::Pressure, comp_data.pressure / 100.0);
+        humidity->Set(Measure::Humidity, comp_data.humidity);
     }
 
     return (result == BME280_OK);

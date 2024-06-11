@@ -10,14 +10,14 @@ extern const DPage pageMain;
 DEF_CHOICE_2( chPressure,
     "Давление",
     *PageDisplay::PageMeasures::self,
-    gset.display.show_measure[TypeMeasure::Pressure],
+    gset.display.show_measure[Measure::Pressure],
     "Откл", "Вкл"
 )
 
 DEF_CHOICE_2(chIllumination,
     "Освещённость",
     *PageDisplay::PageMeasures::self,
-    gset.display.show_measure[TypeMeasure::Illumination],
+    gset.display.show_measure[Measure::Illumination],
     "Откл", "Вкл"
 )
 
@@ -25,7 +25,7 @@ DEF_CHOICE_2(chIllumination,
 DEF_CHOICE_2(chVelocity,
     "Скорость",
     *PageDisplay::PageMeasures::self,
-    gset.display.show_measure[TypeMeasure::Velocity],
+    gset.display.show_measure[Measure::Velocity],
     "Откл", "Вкл"
 )
 #endif
@@ -33,14 +33,14 @@ DEF_CHOICE_2(chVelocity,
 DEF_CHOICE_2(chTemperature,
     "Температура",
     *PageDisplay::PageMeasures::self,
-    gset.display.show_measure[TypeMeasure::Temperature],
+    gset.display.show_measure[Measure::Temperature],
     "Откл", "Вкл"
 )
 
 DEF_CHOICE_2(chHumidity,
     "Влажность",
     *PageDisplay::PageMeasures::self,
-    gset.display.show_measure[TypeMeasure::Humidity],
+    gset.display.show_measure[Measure::Humidity],
     "Откл", "Вкл"
 )
 

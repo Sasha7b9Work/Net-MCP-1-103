@@ -12,6 +12,13 @@
 #include "Hardware/InterCom.h"
 #include "Display/Display.h"
 #include "Hardware/Keyboard.h"
+#include "Storage/Measures.h"
+
+
+namespace Device
+{
+    static void ProcessMeasure(const Measure &, uint time);
+}
 
 
 void Device::Init()
@@ -38,35 +45,44 @@ void Device::Init()
 
 void Device::Update()
 {
-    float temp = 0.0f;
-    float pressure = 0.0f;
-    float humidity = 0.0;
+    Measure temp;
+    Measure pressure;
+    Measure humidity;
+    Measure velocity;
+    Measure illumination;
+
+    uint time = TIME_MS;
 
     if (BME280::GetMeasures(&temp, &pressure, &humidity))
     {
-        InterCom::Send(TypeMeasure::Temperature, temp);
-        InterCom::Send(TypeMeasure::Pressure, pressure);
-        InterCom::Send(TypeMeasure::Humidity, humidity);
+        ProcessMeasure(temp, time);
+        ProcessMeasure(pressure, time);
+        ProcessMeasure(humidity, time);
     }
 
 #ifdef TYPE_1
 
-    float velocity = 0.0f;
-
     if (CG_Anem::GetMeasure(&velocity))
     {
-        InterCom::Send(TypeMeasure::Velocity, velocity);
+        ProcessMeasure(velocity, time);
     }
 #endif
 
-    float illumination = 0.0f;
-
     if (BH1750::GetMeasure(&illumination))
     {
-        InterCom::Send(TypeMeasure::Illumination, illumination);
+        ProcessMeasure(illumination, time);
     }
 
     Keyboard::Update();
 
     Display::Update();
+}
+
+
+void Device::ProcessMeasure(const Measure &measure, uint time)
+{
+    if (measure.correct)
+    {
+        InterCom::Send(measure, time);
+    }
 }

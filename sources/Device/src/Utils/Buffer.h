@@ -2,7 +2,7 @@
 #include <cstring>
 
 
-template<class T, int size_buffer>
+template<int size_buffer>
 class Buffer
 {
 public:
@@ -14,13 +14,13 @@ public:
         Realloc(_size);
     }
 
-    Buffer(int _size, T value) : size(size_buffer)
+    Buffer(int _size, uint8 value) : size(size_buffer)
     {
         Realloc(_size);
         Fill(value);
     }
 
-    void Fill(T value)
+    void Fill(uint8 value)
     {
         for (int i = 0; i < size; i++)
         {
@@ -28,11 +28,11 @@ public:
         }
     }
 
-    T *Data() { return buffer; }
+    uint8 *Data() { return buffer; }
 
-    const T *DataConst() const { return buffer; }
+    const uint8 *DataConst() const { return buffer; }
 
-    T *Last()
+    uint8 *Last()
     {
         return buffer + Size();
     }
@@ -48,7 +48,7 @@ public:
         }
     }
 
-    void ReallocAndFill(int _size, T value)
+    void ReallocAndFill(int _size, uint8 value)
     {
         Realloc(_size);
 
@@ -59,7 +59,7 @@ public:
     }
 
     // Перевыделить память и заполнить её из buffer
-    void ReallocFromBuffer(const T *in, int _size)
+    void ReallocFromBuffer(const uint8 *in, int _size)
     {
         size = _size;
 
@@ -76,7 +76,7 @@ public:
     }
 
     // Записать в буфер size байт из buffer. Если памяти выделено меньше, заполнить только выделенную память
-    void FillFromBuffer(const T *in, int _size)
+    void FillFromBuffer(const uint8 *in, int _size)
     {
         if (_size > Size())
         {
@@ -114,26 +114,26 @@ public:
         }
     }
 
-    T &operator[](uint i)
+    uint8 &operator[](uint i)
     {
         if ((int)i >= 0 && (int)i < Size())
         {
             return buffer[i];
         }
 
-        static T null(0);
+        static uint8 null(0);
 
         return null;
     }
 
-    T &operator[](int i)
+    uint8 &operator[](int i)
     {
         if (i >= 0 && i < Size())
         {
             return buffer[i];
         }
 
-        static T null(0);
+        static uint8 null(0);
 
         return null;
     }
@@ -142,25 +142,23 @@ protected:
 
     int size;
 
-    T buffer[size_buffer];
+    uint8 buffer[size_buffer];
 };
 
 
-template<class T>
-class Buffer1024 : public Buffer<T, 1024>
+class Buffer1024 : public Buffer<1024>
 {
 public:
-    Buffer1024() : Buffer<T, 1024>() { };
-    Buffer1024(int size) : Buffer<T, 1024>(size) { };
-    Buffer1024(int size, T value) : Buffer<T, 1024>(size, value) { };
+    Buffer1024() : Buffer<1024>() { };
+    Buffer1024(int size) : Buffer<1024>(size) { };
+    Buffer1024(int size, uint8 value) : Buffer<1024>(size, value) { };
 };
 
 
-template<class T>
-class Buffer2048 : public Buffer<T, 2048>
+class Buffer2048 : public Buffer<2048>
 {
 public:
-    Buffer2048() : Buffer<T, 2048>() { };
-    Buffer2048(int size) : Buffer<T, 2048>(size) { };
-    Buffer2048(int size, T value) : Buffer<T, 2048>(size, value) { };
+    Buffer2048() : Buffer<2048>() { };
+    Buffer2048(int size) : Buffer<2048>(size) { };
+    Buffer2048(int size, uint8 value) : Buffer<2048>(size, value) { };
 };

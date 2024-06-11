@@ -2,22 +2,7 @@
 #pragma once
 #include "Display/Colors.h"
 #include "Utils/Text/String.h"
-
-
-struct TypeMeasure
-{
-    enum E
-    {
-        Pressure,           // Давление
-        Illumination,       // Освещённость
-        Temperature,        // Температура
-        Humidity,           // Влажность
-#ifdef TYPE_1
-        Velocity,           // Скорость
-#endif
-        Count
-    };
-};
+#include "Storage/Measures.h"
 
 
 namespace Display
@@ -27,7 +12,7 @@ namespace Display
 
     extern bool need_redraw;
 
-    void SetMeasure(TypeMeasure::E, float measure);
+    void SetMeasure(const Measure &, uint timeMS);
 
     void Update();
 

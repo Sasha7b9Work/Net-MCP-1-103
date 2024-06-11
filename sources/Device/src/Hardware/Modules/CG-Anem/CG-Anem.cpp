@@ -19,7 +19,7 @@ void CG_Anem::Init()
 }
 
 
-bool CG_Anem::GetMeasure(float *velocity_out)
+bool CG_Anem::GetMeasure(Measure *velocity_out)
 {
     if (HAL_GetTick() < timeNext)
     {
@@ -64,7 +64,7 @@ bool CG_Anem::GetMeasure(float *velocity_out)
 
     if (result)
     {
-        *velocity_out = velocity.half_word[0] * 0.1f;
+        velocity_out->Set(Measure::Velocity, velocity.half_word[0] * 0.1);
     }
 
     return result;

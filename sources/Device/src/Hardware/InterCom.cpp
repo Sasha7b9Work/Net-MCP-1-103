@@ -9,6 +9,7 @@
 #include "Utils/Buffer.h"
 #include "Utils/Math.h"
 #include "Settings/Settings.h"
+#include "Hardware/HAL/HAL.h"
 
 #ifdef GUI
     #include "Hardware/LAN/ClientTCP.h"
@@ -30,24 +31,26 @@ namespace InterCom
 
     Direction::E direction = Direction::_None;
 
-    Buffer<uint8, 16> CreateMessage(TypeMeasure::E type, float value)
+    static Buffer<16> CreateMessage(const Measure &measure)
     {
-        Buffer<uint8, 16> message;
+        Buffer<16> message;
 
-        message[0] = 'A';
+        message[0] = 'A';                           // offset 0
         message[1] = 'B';
         message[2] = 'C';
-        message[3] = (uint8)type;
+        message[3] = (uint8)measure.GetName();
 
-        uint id = Settings::GetID();
+        uint id = HAL::GetUID();                    // offset 4
 
         std::memcpy(&message[4], &id, 4);
 
-        std::memcpy(&message[12], &value, 4);
+        float value = (float)measure.GetDouble();
 
-        uint hash = Math::CalculateHash(&value, 4);
+        std::memcpy(&message[12], &value, 4);       // offset 12
 
-        std::memcpy(&message[8], &hash, 4);
+        uint hash = Math::CalculateCRC(&value, 4);
+
+        std::memcpy(&message[8], &hash, 4);         // offset 8
 
         return message;
     }
@@ -60,54 +63,61 @@ void InterCom::SetDirection(Direction::E dir)
 }
 
 
-void InterCom::Send(TypeMeasure::E type, float measure)
+void InterCom::Send(const Measure &measure, uint timeMS)
 {
-    static const pchar names[TypeMeasure::Count] =
+    static const pchar names[Measure::Count] =
     {
-        "Pressure",
-        "Luminance",
         "Temperature",
-        "Humidity"
-#ifdef TYPE_1
-        , "Velocity"
-#endif
+        "Pressure",
+        "Humidity",
+        "DewPoint",
+        "Velocity",
+        "Latitude",
+        "Longitude",
+        "Altitude",
+        "Azimuth",
+        "Illumination"
     };
 
-    static const pchar units[TypeMeasure::Count] =
+    static const pchar units[Measure::Count] =
     {
-        "hPa",
-        "lk",
         "degress Celsius",
-        "%%"
-#ifdef TYPE_1
-        , "m/s"
-#endif
+        "hPa",
+        "%%",
+        "degress Celsius",
+        "m/s",
+        "degress",
+        "degress",
+        "m",
+        "degress",
+        "lux"
     };
 
     if (direction & Direction::Display)
     {
-        Display::SetMeasure(type, measure);
+        if (!Measures::IsFixed())
+        {
+            Display::SetMeasure(measure, timeMS);
+        }
     }
 
     if (direction & Direction::CDC)
     {
-        String<> message("%s : %f %s", names[type], measure, units[type]);
+        String<> message("%s : %f %s", names[measure.GetName()], measure.GetDouble(), units[measure.GetName()]);
 
         CDC::Transmit(message.c_str(), message.Size() + 1);
     }
 
+    Buffer<16> data = CreateMessage(measure); //-V821
+
     if (direction & Direction::HC12)
     {
-        Buffer<uint8, 16> data = CreateMessage(type, measure);
-
         HC12::Transmit(data.Data(), data.Size());
     }
 
 #ifdef GUI
 
-    Buffer<uint8, 16> data = CreateMessage(type, measure);
-
-    ClientTCP::Transmit(data.Data(), data.Size()); 
+    ClientTCP::Transmit(data.Data(), data.Size());
 
 #endif
 }
