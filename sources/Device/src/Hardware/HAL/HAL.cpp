@@ -80,7 +80,7 @@ uint HAL::GetUID()
 #else
     uint8 bytes[12];
 
-    std::memcpy(bytes, (void *)0x1FFFF7E8, 12); //-V566
+    std::memcpy(bytes, (void *)UID_BASE, 12); //-V566
 
     return Math::CalculateCRC(bytes, 12);
 #endif
