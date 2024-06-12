@@ -45,11 +45,11 @@ void Device::Init()
 
 void Device::Update()
 {
-    Measure temp;
-    Measure pressure;
-    Measure humidity;
-    Measure velocity;
-    Measure illumination;
+    Measure temp(Measure::Temperature);
+    Measure pressure(Measure::Pressure);
+    Measure humidity(Measure::Humidity);
+    Measure velocity(Measure::Velocity);
+    Measure illumination(Measure::Illumination);
 
     uint time = TIME_MS;
 

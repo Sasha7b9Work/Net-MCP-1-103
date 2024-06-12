@@ -34,12 +34,11 @@ namespace Display
         String<> old;
         String<> current;
 
-        Measure::E type;
-        float value;                // Последнее установленное значение
+        Measure meas;
         int position;               // Текущая отрисовываемая позиция
         uint time;                  // Время последнего изменения текущей отрисовываемой позиции
 
-        DMeasure(Measure::E t) : type(t), value(0.0f), position(0), time(0) {}
+        DMeasure(Measure::E v) : meas(v), position(0), time(0) {}
 
         void Draw(const int x, const int y, int size = 1);
 
@@ -178,7 +177,7 @@ void Display::SetMeasure(const Measure &_measure, uint /*timeMS*/)
 {
     DMeasure &measure = measures[_measure.GetName()];
 
-    if (_measure.GetDouble() == measure.value) //-V550
+    if (_measure.GetDouble() == measure.meas.GetDouble()) //-V550
     {
         return;
     };
@@ -187,9 +186,9 @@ void Display::SetMeasure(const Measure &_measure, uint /*timeMS*/)
 
     measure.position = 0;
     measure.time = TIME_MS;
-    measure.value = (float)_measure.GetDouble();
+    measure.meas = _measure;
 
-    measure.current.SetFormat("%f", measure.value);
+    measure.current.SetFormat("%f", measure.meas.GetDouble());
     measure.current[6] = '\0';
 }
 
@@ -318,17 +317,15 @@ void Display::DrawMeasures()
     const int x0 = 3;
 
     // Пустое место между строками
-    const int d_lines = (Display::HEIGHT - Measure::Count * Font::Height()) / (Measure::Count + 1);
+    const int d_lines = 10;
 
-    const int y0 = d_lines;
+    int y = d_lines;
     const int dY = d_lines + Font::Height();
 
     for (int i = 0; i < Measure::Count; i++)
     {
-        if (gset.display.show_measure[i])
+        if (measures[i].meas.IsEnabled())
         {
-            int y = y0 + i * dY;
-
             if (need_redraw)
             {
                 String<>("%s", measures[i].Name().c_str()).Draw(x0, y, Color::WHITE);
@@ -336,6 +333,8 @@ void Display::DrawMeasures()
             }
 
             measures[i].Draw(93, y);
+
+            y += dY;
         }
     }
 }
@@ -360,9 +359,9 @@ void Display::DrawBigMeasure()
 
     DMeasure &measure = measures[gset.display.typeDisplaydInfo.value];
 
-    Font::Text::DrawBig(x[measure.type], 15, 2, measure.Name().c_str(), Color::_1);
+    Font::Text::DrawBig(x[measure.meas.GetName()], 15, 2, measure.Name().c_str(), Color::_1);
 
-    measures[measure.type].Draw(27, 50, 4);
+    measures[measure.meas.GetName()].Draw(27, 50, 4);
 
     Font::Text::DrawBig(68, 95, 2, measure.Units().c_str(), Color::_1);
 
@@ -374,30 +373,36 @@ String<> Display::DMeasure::Name()
 {
     static const pchar names[Measure::Count] =
     {
-        "ДАВЛЕНИЕ",
-        "ОСВЕЩЕННОСТЬ",
         "ТЕМПЕРАТУРА",
-        "ВЛАЖНОСТЬ"
-#ifdef TYPE_1
-        , "СКОРОСТЬ"
-#endif
+        "ДАВЛЕНИЕ",
+        "ВЛАЖНОСТЬ",
+        "ТОЧКА РОСЫ",
+        "СКОРОСТЬ",
+        "ШИРОТА",
+        "ДОЛГОТА",
+        "ВЫСОТА",
+        "АЗИМУТ",
+        "ОСВЕЩЕННОСТЬ"
     };
 
-    return String<>(names[type]);
+    return String<>(names[meas.GetName()]);
 }
 
 String<> Display::DMeasure::Units()
 {
     static const pchar units[Measure::Count] =
     {
-        "гПа",
-        "лк",
         "ЁС",
-        "%%"
-#ifdef TYPE_1
-        , "м/с"
-#endif
+        "гПа",
+        "%%",
+        "%%",
+        "м/с",
+        "%%",
+        "%%",
+        "%%",
+        "",
+        "лк"
     };
 
-    return String<>(units[type]);
+    return String<>(units[meas.GetName()]);
 }

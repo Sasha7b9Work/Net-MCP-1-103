@@ -21,3 +21,23 @@ bool Measures::IsFixed()
 {
     return fixed;
 }
+
+
+bool Measure::IsEnabled() const
+{
+    static const bool enabled[Count] =
+    {
+        true,      // Temperature
+        true,      // Pressure
+        true,      // Humidity
+        false,     // DewPoint
+        true,      // Velocity
+        false,     // Latitude
+        false,     // Longitude
+        false,     // Altitude
+        false,     // Azimuth
+        true       // Illumination
+    };
+    
+    return enabled[name];
+}

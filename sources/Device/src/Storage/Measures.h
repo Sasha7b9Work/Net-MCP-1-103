@@ -42,6 +42,8 @@ struct Measure
         return name;
     }
 
+    bool IsEnabled() const;
+
     void Set(E _name, float _value)
     {
         Set(_name, (double)_value);
@@ -55,6 +57,8 @@ struct Measure
     }
 
     bool correct;
+
+    Measure(E v) : value(0.0), correct(false), name(v) { }
 
 private:
 
