@@ -7,19 +7,21 @@ project (Device)
 set(CMAKE_UNITY_BUILD_BATCH_SIZE 16)
 
 
-include_directories(.
-                    Device
-                    ../../Device/src
-                    ../../Device/src/Hardware/CDC
-                    ../../Device/src/Hardware/HAL
-                    ../../VS/ThirdParty/wxWidgets/include
-                    ../../generated/ThirdParty/lib/vc_dll/mswud
-                    ../../common/_VS_KEIL/CMSIS
-                    ../../common/_VS_LIBS/STM32F1
-                    ../../common/STM32Cube_F1/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc
-                    ../../common/STM32Cube_F1/Middlewares/ST/STM32_USB_Device_Library/Core/Inc
-                    ../../common/STM32Cube_F1/Drivers/CMSIS/Device/ST/STM32F1xx/Include
-                    ../../common/STM32Cube_F1/Drivers/STM32F1xx_HAL_Driver/Inc)
+include_directories(
+    .
+    Device
+    ../../Device/src
+    ../../Device/src/Hardware/CDC
+    ../../Device/src/Hardware/HAL
+    ../../VS/ThirdParty/wxWidgets/include
+    ../../generated/ThirdParty/lib/vc_dll/mswud
+    ../../common/_VS_KEIL/CMSIS
+    ../../common/_VS_LIBS/STM32F1
+    ../../common/STM32Cube_F1/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc
+    ../../common/STM32Cube_F1/Middlewares/ST/STM32_USB_Device_Library/Core/Inc
+    ../../common/STM32Cube_F1/Drivers/CMSIS/Device/ST/STM32F1xx/Include
+    ../../common/STM32Cube_F1/Drivers/STM32F1xx_HAL_Driver/Inc
+)
 
 link_directories(../../generated/ThirdParty/lib/vc_dll)
 
@@ -75,6 +77,7 @@ file(GLOB HARDWARE_MODULES_ST7735   ../../Device/src/Hardware/Modules/ST7735/*.*
 file(GLOB MENU                      ../../Device/src/Menu/*.*)
 file(GLOB MENU_PAGES                ../../Device/src/Menu/Pages/*.*)
 file(GLOB SETTINGS                  ../../Device/src/Settings/*.*)
+file(GLOB STORAGE                   ../../Device/src/Storage/*.*)
 file(GLOB UTILS                     ../../Device/src/Utils/*.*)
 file(GLOB UTILS_TEXT                ../../Device/src/Utils/Text/*.*)
 
@@ -97,47 +100,54 @@ source_group(Hardware/Modules/ST7735    FILES ${HARDWARE_MODULES_ST7735})
 source_group(Menu                       FILES ${MENU})
 source_group(Menu/Pages                 FILES ${MENU_PAGES})
 source_group(Settings                   FILES ${SETTINGS})
+source_group(Storage                    FILES ${STORAGE})
 source_group(Utils                      FILES ${UTILS})
 source_group(Utils/Text                 FILES ${UTILS_TEXT})
 
 
-set_source_files_properties(Hardware/LAN/libnet/netserver.cpp
-                            Hardware/LAN/libnet/netbase.cpp
-                            Hardware/LAN/libnet/netclient.cpp
-                            Hardware/LAN/libnet/netpacket.cpp
-                            Hardware/LAN/ClientTCP.cpp
-                            Application.cpp
-                            Frame.cpp
-                            main_win.cpp
-                            PROPERTIES SKIP_UNITY_BUILD_INCLUSION ON)
+set_source_files_properties(
+    Hardware/LAN/libnet/netserver.cpp
+    Hardware/LAN/libnet/netbase.cpp
+    Hardware/LAN/libnet/netclient.cpp
+    Hardware/LAN/libnet/netpacket.cpp
+    Hardware/LAN/ClientTCP.cpp
+    Application.cpp
+    Frame.cpp
+    main_win.cpp
+    PROPERTIES SKIP_UNITY_BUILD_INCLUSION ON
+)
 
 
-set_source_files_properties(../../Device/src/Hardware/CDC/usbd_conf.c
-                            PROPERTIES HEADER_FILE_ONLY TRUE)
+set_source_files_properties(
+    ../../Device/src/Hardware/CDC/usbd_conf.c
+    PROPERTIES HEADER_FILE_ONLY TRUE
+)
 
-add_executable( ${PROJECT_NAME}
-                ${LIBS_STM32F1}
-                ${LIBS_STM32F1_INC}
-                ${LIBS_USBD}
-                ${SRC}
-                ${DISPLAY}
-                ${DISPLAY_FONT}
-                ${HARDWARE}
-                ${HARDWARE_CDC}
-                ${HARDWARE_HAL}
-                ${HARDWARE_LAN}
-                ${HARDWARE_LAN_LIBNET}
-                ${HARDWARE_MODULES_BH1750}
-                ${HARDWARE_MODULES_BME280}
-                ${HARDWARE_MODULES_CG_ANEM}
-                ${HARDWARE_MODULES_HC12}
-                ${HARDWARE_MODULES_ST7735}
-                ${MENU}
-                ${MENU_PAGES}
-                ${SETTINGS}
-                ${UTILS}
-                ${UTILS_TEXT}
-                )
+add_executable(
+    ${PROJECT_NAME}
+    ${LIBS_STM32F1}
+    ${LIBS_STM32F1_INC}
+    ${LIBS_USBD}
+    ${SRC}
+    ${DISPLAY}
+    ${DISPLAY_FONT}
+    ${HARDWARE}
+    ${HARDWARE_CDC}
+    ${HARDWARE_HAL}
+    ${HARDWARE_LAN}
+    ${HARDWARE_LAN_LIBNET}
+    ${HARDWARE_MODULES_BH1750}
+    ${HARDWARE_MODULES_BME280}
+    ${HARDWARE_MODULES_CG_ANEM}
+    ${HARDWARE_MODULES_HC12}
+    ${HARDWARE_MODULES_ST7735}
+    ${MENU}
+    ${MENU_PAGES}
+    ${SETTINGS}
+    ${STORAGE}
+    ${UTILS}
+    ${UTILS_TEXT}
+)
 
 target_link_libraries(${PROJECT_NAME} wxbase32ud wxmsw32ud_core Ws2_32)
 
