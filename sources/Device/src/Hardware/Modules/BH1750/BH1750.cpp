@@ -48,8 +48,6 @@ bool BH1750::GetMeasure(Measure *illumination)
         return false;
     }
 
-    timeNext += TIME_MEASURE + (std::rand() % 100);
-
 #ifdef IN_MODE_TEST
 
     static float value = 1.5f;
@@ -73,9 +71,9 @@ bool BH1750::GetMeasure(Measure *illumination)
     {
         float value = (float)(result.byte[1] | (result.byte[0] << 8)) / 1.2f * (69.0f / 31.0f);
 
-//        float value = (float)(result.byte[1] | (result.byte[0] << 8)) / 1.2f;
-
         illumination->Set(Measure::Illumination, value);
+
+        timeNext += TIME_MEASURE + (std::rand() % 100);
 
         return true;
     }
