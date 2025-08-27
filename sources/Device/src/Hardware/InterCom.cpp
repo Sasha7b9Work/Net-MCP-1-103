@@ -38,7 +38,7 @@ namespace InterCom
         message[0] = 'A';                           // offset 0
         message[1] = 'B';
         message[2] = 'C';
-        message[3] = (uint8)measure.GetName();
+        message[3] = (uint8)measure.GetType();
 
         uint id = HAL::GetUID();                    // offset 4
 
@@ -103,7 +103,7 @@ void InterCom::Send(const Measure &measure, uint timeMS)
 
     if (direction & Direction::CDC)
     {
-        String<> message("%s : %f %s", names[measure.GetName()], measure.GetDouble(), units[measure.GetName()]);
+        String<> message("%s : %f %s", names[measure.GetType()], measure.GetDouble(), units[measure.GetType()]);
 
         CDC::Transmit(message.c_str(), message.Size() + 1);
     }

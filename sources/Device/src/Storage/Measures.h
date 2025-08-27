@@ -27,7 +27,7 @@ struct Measure
 
     void Clear()
     {
-        name = Count;
+        type = Count;
         correct = false;
         value = (double)ERROR_VALUE_FLOAT;
     }
@@ -37,9 +37,9 @@ struct Measure
         return value;
     }
 
-    E GetName() const
+    E GetType() const
     {
-        return name;
+        return type;
     }
 
     bool IsEnabled() const;
@@ -51,14 +51,14 @@ struct Measure
 
     void Set(E _name, double _value)
     {
-        name = _name;
+        type = _name;
         SetDouble(_value);
         correct = true;
     }
 
     bool correct;
 
-    Measure(E v) : value(0.0), correct(false), name(v) { }
+    Measure(E v) : value(0.0), correct(false), type(v) { }
 
 private:
 
@@ -72,7 +72,7 @@ private:
         value = _value;
     }
 
-    E name;
+    E type;
 };
 
 

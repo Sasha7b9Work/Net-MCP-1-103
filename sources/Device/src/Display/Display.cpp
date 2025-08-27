@@ -175,7 +175,7 @@ void Rectangle::Draw(int x, int y, Color::E color)
 
 void Display::SetMeasure(const Measure &_measure, uint /*timeMS*/)
 {
-    DMeasure &measure = measures[_measure.GetName()];
+    DMeasure &measure = measures[_measure.GetType()];
 
     if (_measure.GetDouble() == measure.meas.GetDouble()) //-V550
     {
@@ -359,9 +359,9 @@ void Display::DrawBigMeasure()
 
     DMeasure &measure = measures[gset.display.typeDisplaydInfo.value];
 
-    Font::Text::DrawBig(x[measure.meas.GetName()], 15, 2, measure.Name().c_str(), Color::_1);
+    Font::Text::DrawBig(x[measure.meas.GetType()], 15, 2, measure.Name().c_str(), Color::_1);
 
-    measures[measure.meas.GetName()].Draw(27, 50, 4);
+    measures[measure.meas.GetType()].Draw(27, 50, 4);
 
     Font::Text::DrawBig(68, 95, 2, measure.Units().c_str(), Color::_1);
 
@@ -385,7 +385,7 @@ String<> Display::DMeasure::Name()
         "ÎÑÂÅÙÅÍÍÎÑÒÜ"
     };
 
-    return String<>(names[meas.GetName()]);
+    return String<>(names[meas.GetType()]);
 }
 
 String<> Display::DMeasure::Units()
@@ -404,5 +404,5 @@ String<> Display::DMeasure::Units()
         "ëê"
     };
 
-    return String<>(units[meas.GetName()]);
+    return String<>(units[meas.GetType()]);
 }

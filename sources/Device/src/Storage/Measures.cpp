@@ -39,5 +39,5 @@ bool Measure::IsEnabled() const
         true       // Illumination
     };
     
-    return enabled[name];
+    return enabled[type];
 }
