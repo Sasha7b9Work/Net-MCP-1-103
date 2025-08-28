@@ -25,8 +25,8 @@ namespace InterCom
     *  2       - 'C'
     *  3       - type
     *  4...7   - ID
-    *  8...11  - hash[12...15]
-    *  12...15 - value
+    *  8...11  - value
+    *  12...15 - hash[0...11]
     */
 
     Direction::E direction = Direction::_None;
@@ -35,22 +35,22 @@ namespace InterCom
     {
         Buffer<16> message;
 
-        message[0] = 'A';                           // offset 0
+        message[0] = 'A';
         message[1] = 'B';
         message[2] = 'C';
         message[3] = (uint8)measure.GetType();
 
-        uint id = HAL::GetUID();                    // offset 4
+        uint id = HAL::GetUID();
 
-        std::memcpy(&message[4], &id, 4);
+        std::memcpy(&message[4], &id, sizeof(id));
 
         float value = (float)measure.GetDouble();
 
-        std::memcpy(&message[12], &value, 4);       // offset 12
+        std::memcpy(&message[8], &value, sizeof(value));
 
-        uint hash = Math::CalculateCRC(&value, 4);
+        uint hash = Math::CalculateCRC(&message[0], 12);
 
-        std::memcpy(&message[8], &hash, 4);         // offset 8
+        std::memcpy(&message[12], &hash, sizeof(hash));
 
         return message;
     }
